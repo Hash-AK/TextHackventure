@@ -14,6 +14,11 @@ type Room struct {
 	Description string
 }
 
+type Player struct {
+	CurrentRoom *Room
+	// Inventory To be added
+}
+
 func main() {
 	beginningRoom := Room{
 		Name:        "The Dark Forest",
@@ -33,13 +38,23 @@ func main() {
 	for {
 		fmt.Print("> ")
 		input, _ := reader.ReadString('\n')
-		command := strings.TrimSpace(input)
-		fmt.Printf("You entered the command: %s\n", command)
+		cleanInput := strings.TrimSpace(input)
+		fmt.Printf("You entered the command: %s\n", cleanInput)
+		fieldsCommand := strings.Fields(cleanInput)
+		if len(fieldsCommand) == 0 {
+			return
+		}
+		command := fieldsCommand[0]
+		fmt.Println(command)
 		switch command {
 		case "quit":
 			fmt.Println("Goodbye, traveller...")
 			os.Exit(0)
+		case "go":
+			fmt.Println("You want to go in the direction : " + fieldsCommand[1])
+
 		}
+
 	}
 
 }
