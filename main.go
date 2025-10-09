@@ -1,31 +1,30 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 
-	"os"
-
 	"github.com/fatih/color"
-
-	"strings"
 )
 
+type Room struct {
+	Name        string
+	Description string
+}
+
 func main() {
-	fmt.Print("Enter some text : ")
-	reader := bufio.NewReader(os.Stdin)
-	input, _ := reader.ReadString('\n')
-	input = strings.TrimSpace(input)
-	color.Green("You entered, %s", input)
-	color.Blue("Is that right?")
-	fmt.Print("> ")
-	input, _ = reader.ReadString('\n')
-	input = strings.TrimSpace(input)
-	if input == "yes" {
-		color.Green("Good!")
-	} else if input == "no" {
-		color.Red("Liar!")
-	} else {
-		color.Yellow("I did not understand")
+	beginningRoom := Room{
+		Name:        "Dark Forest",
+		Description: "You in a deep, dark, mysterious forest.",
 	}
+	color.Set(color.FgGreen)
+	fmt.Print("Welcome to ")
+	color.Set(color.FgBlue)
+	fmt.Println("TextHackventure!")
+	color.Unset()
+	fmt.Println("")
+	fmt.Println("		////////////////		")
+	fmt.Println("")
+	fmt.Println("Chapter 1 : The " + beginningRoom.Name)
+	fmt.Println(beginningRoom.Description)
+
 }
