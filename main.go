@@ -64,6 +64,12 @@ func main() {
 		Items:       make(map[string]*Item),
 		Features:    make(map[string]string),
 	}
+	guardianGate := Room{
+		Name:        "The Guardian Gate",
+		Description: "You stand on a wide, rocky plateau. In front of you stand a gigantic gate, made of an unknown, dark stone. A fearsome dragon, it's scales the color of obsidian, lies coiled before it. In the center of the plateau is a small, unlit fire pit...",
+		Exits:       make(map[string]*Exit),
+		Features:    make(map[string]string),
+	}
 	beginningRoom.Exits["north"] = &Exit{
 		Destination: &hut,
 		Description: "As you walk carefully along the small path, the trees slowly close behind you, hiidng any trace of passage. You walk there a long, long time, so long you even forget the perception of time. Finally, you see light in front of you",
@@ -114,6 +120,11 @@ func main() {
 	riverbank.Items["flint"] = &Item{
 		Name:        "Natural Fling",
 		Description: "Perfect for making sparks, perhaps to light up a fire?",
+	}
+	guardianGate.Features["fire pit"] = "A circle of blackened stones, clearly used to make a fire in an ancient time. It is currently unlit."
+	guardianGate.Exits["south"] = &Exit{
+		Destination: &riverbank,
+		Description: "You flee back south, the dragon's glare burning at your back. You can hear back the calming noise of the river's flow.",
 	}
 	reader := bufio.NewReader(os.Stdin)
 	color.Set(color.FgGreen)
