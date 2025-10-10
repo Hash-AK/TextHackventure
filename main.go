@@ -14,14 +14,21 @@ type Room struct {
 	Description string
 	Exits       map[string]*Exit
 	Features    map[string]string
+	Items       map[string]*Item
 }
 
 type Player struct {
 	CurrentRoom *Room
 	// Inventory To be added
+	Inventory map[string]*Item
 }
 type Exit struct {
 	Destination *Room
+	Description string
+}
+
+type Item struct {
+	Name        string
 	Description string
 }
 
@@ -33,9 +40,14 @@ func main() {
 	}
 	hut := Room{
 		Name:        "The Abandonned Hut",
-		Description: "You stumble upon a vast clearing. In it's center, an old, visibly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it",
+		Description: "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, visibly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. Leaning against the wall, you see a sturdy-looking pickaxe",
 		Exits:       make(map[string]*Exit),
 		Features:    make(map[string]string),
+		Items:       make(map[string]*Item),
+	}
+	caveEntrance := Room{
+		Name:        "The Cave Entrance",
+		Description: "After entering the cave entrance, you feel the heavy weight of tons and tons of rock surroudning you. Suddenly, you reach the end of the tunnel. The ",
 	}
 	beginningRoom.Exits["north"] = &Exit{
 		Destination: &hut,
@@ -45,8 +57,19 @@ func main() {
 		Destination: &beginningRoom,
 		Description: "You head back into the oppressive darkness of the forest",
 	}
+	hut.Exits["east"] = &Exit{
+		Destination: &caveEntrance,
+		Description: "You head on the small path going east. The forest lighter, and you see big boulders on the side of the path. Soon enough you reach the foot of the mountain. A mysterious cave entrance is there, just in front of you",
+	}
 	hut.Features["note"] = "The note reads: \nThe beast of fire, \nGuardian of The Gate \nFears only the fire \nOf the earthsoul crystals..."
-	player := Player{CurrentRoom: &beginningRoom}
+	hut.Items["pickaxe"] = &Item{
+		Name:        "pickaxe",
+		Description: "A sturdy-looking pickaxe. Perfect to break big rocks.",
+	}
+	player := Player{
+		CurrentRoom: &beginningRoom,
+		Inventory:   make(map[string]*Item),
+	}
 	reader := bufio.NewReader(os.Stdin)
 	color.Set(color.FgGreen)
 	fmt.Print("Welcome to ")
@@ -100,7 +123,24 @@ func main() {
 			} else {
 				fmt.Println("You cannot read this")
 			}
+		case "take":
+			if item, ok := player.CurrentRoom.Items[argument]; ok {
+				player.Inventory[argument] = item
+				delete(player.CurrentRoom.Items, argument)
+				fmt.Printf("You take the %s.\n", item.Name)
 
+			} else {
+				fmt.Println("You cannot take this!")
+			}
+		case "inventory":
+			fmt.Println("You are carrying: ")
+			if len(player.Inventory) == 0 {
+				fmt.Println("- Nothing")
+			} else {
+				for _, item := range player.Inventory {
+					fmt.Println(" * ", item.Name, " - ", item.Description)
+				}
+			}
 		default:
 			fmt.Println(cleanInput + " : command not found. Type 'help' to get a list of the commands.")
 		}
