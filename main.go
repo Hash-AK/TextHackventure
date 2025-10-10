@@ -118,7 +118,7 @@ func main() {
 	}
 	riverbank.Features["sign"] = "As you approach, you feel the fear in you : the sign show's a skull, with the following text writen next to it :\nWARNING - Geological Survey Team 7: High levels of methane and sulfur gas reported beyond this point. Open flames are strictly prohibited. EXTREME DANGER.\n You also see a smaller note carved by hand under it. It reads :\nBEWARE THE GUARDIAN...\nTurn back immediatly...\nLife is worth way more than an hypotethic treasure..."
 	riverbank.Items["flint"] = &Item{
-		Name:        "Natural Fling",
+		Name:        "Flint",
 		Description: "Perfect for making sparks, perhaps to light up a fire?",
 	}
 	guardianGate.Features["fire pit"] = "A circle of blackened stones, clearly used to make a fire in an ancient time. It is currently unlit."
@@ -186,6 +186,11 @@ func main() {
 				player.Inventory[argument] = item
 				delete(player.CurrentRoom.Items, argument)
 				fmt.Printf("You take the %s.\n", item.Name)
+				if player.CurrentRoom == &hut {
+					player.CurrentRoom.Description = "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, visibly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. Leaning against the wall, there used to be a pickaxe, but you now took it."
+				} else if player.CurrentRoom == &riverbank {
+					player.CurrentRoom.Description = ""
+				}
 
 			} else {
 				fmt.Println("You cannot take this!")
@@ -218,6 +223,15 @@ func main() {
 				} else {
 					fmt.Println("You don't have a pickaxe")
 				}
+			} else if argument == "flint" {
+				if _, hasFlint := player.Inventory["flint"]; hasFlint {
+					if player.CurrentRoom == &guardianGate {
+						// do stuff because right room and right flint
+					}
+				} else {
+					fmt.Println("You don't have a flint")
+				}
+
 			} else {
 				fmt.Println("You can't use that.")
 			}
