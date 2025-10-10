@@ -19,8 +19,7 @@ type Room struct {
 
 type Player struct {
 	CurrentRoom *Room
-	// Inventory To be added
-	Inventory map[string]*Item
+	Inventory   map[string]*Item
 }
 type Exit struct {
 	Destination *Room
@@ -58,7 +57,13 @@ func main() {
 		Items:       make(map[string]*Item),
 		Features:    make(map[string]string),
 	}
-
+	riverbank := Room{
+		Name:        "The Riverbank",
+		Description: "You reach the bank of the river. Here, it become pretty wide. In the clear, cold water, you see lots of rocks. A path with a sign beside it goes toward the north, near what look like old ruins. Turning back your attention to the river and it's mesmerizing sound, you realize that the stones on the bank look really much like a flint...",
+		Exits:       make(map[string]*Exit),
+		Items:       make(map[string]*Item),
+		Features:    make(map[string]string),
+	}
 	beginningRoom.Exits["north"] = &Exit{
 		Destination: &hut,
 		Description: "As you walk carefully along the small path, the trees slowly close behind you, hiidng any trace of passage. You walk there a long, long time, so long you even forget the perception of time. Finally, you see light in front of you",
@@ -71,6 +76,10 @@ func main() {
 		Destination: &caveEntrance,
 		Description: "You head on the small path going east. The forest become lighter, and you see big boulders on the side of the path. Soon enough you reach the foot of the mountain. A mysterious cave entrance is there, just in front of you.",
 	}
+	hut.Exits["west"] = &Exit{
+		Destination: &riverbank,
+		Description: "You follow the gargling stream. It's sound is like an invitation to continue, mesmerizing and beautiful. You walk beside it for a good while, before reaching a place where the stream becomes a river.",
+	}
 	hut.Features["note"] = "The note reads: \nThe beast of fire, \nGuardian of The Gate \nFears only the green sparks \nOf the earthsoul crystals..."
 	hut.Items["pickaxe"] = &Item{
 		Name:        "pickaxe",
@@ -78,7 +87,7 @@ func main() {
 	}
 	caveEntrance.Exits["west"] = &Exit{
 		Destination: &hut,
-		Description: "You head back to the east, toward the clearing and the abandonned hut you saw earlier.",
+		Description: "You head back to the west, toward the clearing and the abandonned hut you saw earlier.",
 	}
 	crystalCave.Exits["west"] = &Exit{
 		Destination: &caveEntrance,
@@ -91,9 +100,21 @@ func main() {
 	}
 	crystalCave.Items["crystals"] = &Item{
 		Name:        "malachite crystals",
-		Description: "Shards pf a vibrant green mineral. They seem to hum with a faint energy.",
+		Description: "Shards of a vibrant green mineral. They seem to hum with a faint energy.",
 	}
-
+	riverbank.Exits["east"] = &Exit{
+		Destination: &hut,
+		Description: "You walk back on your step, going east toward the old hut. You watch the big river becoming a small stream made of melt mountain snow.",
+	}
+	riverbank.Exits["north"] = &Exit{
+		Destination: &guardianGate,
+		Description: "Using all your courage, you follow up the path trought the old, abandonned ruins, toward the north. You are now sure of where this path led : the mystical Guardian Gate. As you look around in these long-forgotten rocks, you keep seeing sign to go back : carving in the rotten doors, painting on the walls... Soon enough, you reach a bare rocky plateau.",
+	}
+	riverbank.Features["sign"] = "As you approach, you feel the fear in you : the sign show's a skull, with the following text writen next to it :\nWARNING - Geological Survey Team 7: High levels of methane and sulfur gas reported beyond this point. Open flames are strictly prohibited. EXTREME DANGER.\n You also see a smaller note carved by hand under it. It reads :\nBEWARE THE GUARDIAN...\nTurn back immediatly...\nLife is worth way more than an hypotethic treasure..."
+	riverbank.Items["flint"] = &Item{
+		Name:        "Natural Fling",
+		Description: "Perfect for making sparks, perhaps to light up a fire?",
+	}
 	reader := bufio.NewReader(os.Stdin)
 	color.Set(color.FgGreen)
 	fmt.Print("Welcome to ")
