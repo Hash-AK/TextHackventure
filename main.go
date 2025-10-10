@@ -54,6 +54,9 @@ func main() {
 	crystalCave := Room{
 		Name:        "The Crystal Cave",
 		Description: "As you look around, you realize that weird little crystals emerge of the rock. They cover the walls and ceiling of the cave, makink long, brilliant veins. A long-forgotten sign lies on one wall. You realize that the little lamps you saw earlier aren't usual lamps : they glow from a weird, magical green flame...",
+		Exits:       make(map[string]*Exit),
+		Items:       make(map[string]*Item),
+		Features:    make(map[string]string),
 	}
 
 	beginningRoom.Exits["north"] = &Exit{
@@ -81,9 +84,14 @@ func main() {
 		Destination: &caveEntrance,
 		Description: "You head back toward the cave entrance, in the tight tunnel. You're temporarly blinded due to the change of the ligh, but then you can continue forward. Soon enough you see the light of the day",
 	}
+	crystalCave.Features["sign"] = "You have some trouble reading the sign, but here's what you where able to decipher : \nProperty of the Alchemists' Guild. \nHigh Concentration of Malachite\nCAUTION : Unstable. "
 	player := Player{
 		CurrentRoom: &beginningRoom,
 		Inventory:   make(map[string]*Item),
+	}
+	crystalCave.Items["crystals"] = &Item{
+		Name:        "malachite crystals",
+		Description: "Shards pf a vibrant green mineral. They seem to hum with a faint energy.",
 	}
 
 	reader := bufio.NewReader(os.Stdin)
@@ -170,6 +178,7 @@ func main() {
 							Destination: &crystalCave,
 							Description: "As you walk trought this thight tunnel, you hear the rhytmed sound of water drop falling from the ceiling. Since how long did no one came here? Where does the tunnels go? After a few minutes, you see a weird light. Suddenly, the tunnel ends in an enormous cave, lighten up by mysterious little lamps...",
 						}
+						caveEntrance.Description = "The big boulders that once blocked the way now lays in rubbles on the sides. The tunnel that goes to the center of the mountain, toward the east, is now fully usable. You can also go back on your step and go toward the west, in the direction of the clearing..."
 					} else {
 						fmt.Println("You cannot use the pickaxe here!")
 					}
