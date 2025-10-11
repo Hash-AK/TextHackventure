@@ -15,6 +15,7 @@ type Room struct {
 	Exits       map[string]*Exit
 	Features    map[string]string
 	Items       map[string]*Item
+	NPCs        map[string]*NPC
 }
 
 type Player struct {
@@ -30,8 +31,20 @@ type Item struct {
 	Name        string
 	Description string
 }
+type NPC struct {
+	Name        string
+	Description string
+	Dialogue    string
+	TalkedTo    bool
+}
 
 func main() {
+	hermit := &NPC{
+		Name:        "hermit",
+		Description: "A very old man with a long, white beard sits by the empty fireplace, rocking slowly. He seems lost in toughts",
+		Dialogue:    "He looks up at you with cloudy eyes. 'The wyrm of the gate is a creature of shadow and flame...' He paused, looking lost. Then with hysteria he added 'They told me the trasure was worth it! The Alchemists Guild, the geologists... They all lied! It's all a trap! The gass... the flame... the GREEN, THE GREEN LIGHT!'. He then fell back on his seat, mumbling understandable words.",
+	}
+	fmt.Println(hermit.Name)
 	beginningRoom := Room{
 		Name:        "The Dark Forest",
 		Description: "You are in a deep, dark, mysterious forest. Tall, majestuous trees surround you from all sides, except for a tiny path heading north, deeper and deeper into the woods. The air is cool and damp.",
@@ -39,10 +52,11 @@ func main() {
 	}
 	hut := Room{
 		Name:        "The Abandonned Hut",
-		Description: "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, visibly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. Leaning against the wall, you see a sturdy-looking pickaxe",
+		Description: "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, visibly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. In the corner, an old hermit sits rocking in a chair, starring blankly at the empty fireplace.Leaning against the wall, you see a sturdy-looking pickaxe",
 		Exits:       make(map[string]*Exit),
 		Features:    make(map[string]string),
 		Items:       make(map[string]*Item),
+		NPCs:        make(map[string]*NPC),
 	}
 	caveEntrance := Room{
 		Name:        "The Cave Entrance",
@@ -130,6 +144,7 @@ func main() {
 		Destination: &riverbank,
 		Description: "You flee back south, the dragon's glare burning at your back. You can hear back the calming noise of the river's flow.",
 	}
+	hut.NPCs["hermit"] = hermit
 	reader := bufio.NewReader(os.Stdin)
 	color.Set(color.FgGreen)
 	fmt.Print("Welcome to ")
@@ -193,6 +208,7 @@ func main() {
 					}
 				}
 				return
+
 			}
 			target := fieldsCommand[1]
 			if item, ok := player.Inventory[target]; ok {
@@ -208,6 +224,11 @@ func main() {
 			if feature, ok := player.CurrentRoom.Features[target]; ok {
 				fmt.Println("Feature around you : ")
 				fmt.Println(" * ", feature)
+				return
+			}
+			if npc, ok := player.CurrentRoom.NPCs[target]; ok {
+				fmt.Println("People around you : ")
+				fmt.Println(" * ", npc.Description)
 				return
 			}
 			fmt.Println("You don't see a '" + target + "' here.")
@@ -289,7 +310,20 @@ func main() {
 				fmt.Println("You can't use that.")
 
 			}
+		case "talk":
+			if argument == "hermit" {
+				if npc, ok := player.CurrentRoom.NPCs["hermit"]; ok {
+					if !npc.TalkedTo {
+						fmt.Println(npc.Dialogue)
+						npc.TalkedTo = true
+					} else {
+						fmt.Println("'Leave me to my ghosts,' the old man mutters, refusing to look at you again.")
+					}
 
+				} else {
+					fmt.Println("You cannot talk to that.")
+				}
+			}
 		default:
 			fmt.Println(cleanInput + " : command not found. Type 'help' to get a list of the commands.")
 		}
