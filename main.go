@@ -71,7 +71,7 @@ func main() {
 		Features:    make(map[string]string),
 	}
 	treasureRoom := Room{
-		Name:        "The Treasure Roome",
+		Name:        "The Treasure Room",
 		Description: "You stuble inside a vast, stone-paved room. In it's center lies an enormous chest, debording with gold, jewels and other treasures. You made it! You found the legendary treasure of the Guardian Gate!",
 	}
 	beginningRoom.Exits["north"] = &Exit{
@@ -93,7 +93,7 @@ func main() {
 	hut.Features["note"] = "The note reads: \nThe beast of fire, \nGuardian of The Gate \nFears only the green sparks \nOf the earthsoul crystals..."
 	hut.Items["pickaxe"] = &Item{
 		Name:        "pickaxe",
-		Description: "A sturdy-looking pickaxe. Perfect to break big rocks.",
+		Description: "A sturdy-looking, iron-headed pickaxe. A standart tool for geology and mining, Perfect to break big rocks.",
 	}
 	caveEntrance.Exits["west"] = &Exit{
 		Destination: &hut,
@@ -109,8 +109,8 @@ func main() {
 		Inventory:   make(map[string]*Item),
 	}
 	crystalCave.Items["crystals"] = &Item{
-		Name:        "malachite crystals",
-		Description: "Shards of a vibrant green mineral. They seem to hum with a faint energy.",
+		Name:        "crystals",
+		Description: "Shards of a vibrant green Malachite, a copper carbonate hydroxide mineral. When heated, the copper ions should produce a distinct green flame.",
 	}
 	riverbank.Exits["east"] = &Exit{
 		Destination: &hut,
@@ -122,8 +122,8 @@ func main() {
 	}
 	riverbank.Features["sign"] = "As you approach, you feel the fear in you : the sign show's a skull, with the following text writen next to it :\nWARNING - Geological Survey Team 7: High levels of methane and sulfur gas reported beyond this point. Open flames are strictly prohibited. EXTREME DANGER.\n You also see a smaller note carved by hand under it. It reads :\nBEWARE THE GUARDIAN...\nTurn back immediatly...\nLife is worth way more than an hypotethic treasure..."
 	riverbank.Items["flint"] = &Item{
-		Name:        "Flint",
-		Description: "Perfect for making sparks, perhaps to light up a fire?",
+		Name:        "flint",
+		Description: "A piece of flint, a form of microcrystalline quartz. It has a conchoidal fracture, leaving a very sharp edge. Striking it against steel or pyrite can create high-temperature sparks. Perhaps to light up a fire?",
 	}
 	guardianGate.Features["fire pit"] = "A circle of blackened stones, clearly used to make a fire in an ancient time. It is currently unlit."
 	guardianGate.Exits["south"] = &Exit{
@@ -159,7 +159,7 @@ func main() {
 		case "help":
 			fmt.Println("command list :")
 			fmt.Println("help - display this help menu")
-			fmt.Println("describe - describe the place you are currently in")
+			fmt.Println("look - look around the place you are currently in, if given no argument. If given an argument,  look at your iventory, item or feature in the room.")
 			fmt.Println("go [north/south/east/west] - go in the choosed direction")
 			fmt.Println("read [note/sign] - read an element of the place")
 			fmt.Println("take [item] - take an item by it's name.")
@@ -181,9 +181,36 @@ func main() {
 			} else {
 				fmt.Println("You cannot go this way!")
 			}
-		case "describe":
-			fmt.Println("You are in : " + player.CurrentRoom.Name)
-			fmt.Println(player.CurrentRoom.Description)
+		case "look":
+			if len(fieldsCommand) == 1 {
+				fmt.Println("You are in : " + player.CurrentRoom.Name)
+				fmt.Println(player.CurrentRoom.Description)
+
+				if len(player.CurrentRoom.Items) > 0 {
+					fmt.Println("You also see:")
+					for _, item := range player.CurrentRoom.Items {
+						fmt.Printf(" - A %s\n", item.Name)
+					}
+				}
+				return
+			}
+			target := fieldsCommand[1]
+			if item, ok := player.Inventory[target]; ok {
+				fmt.Println("In your inventory : ")
+				fmt.Println(" * ", item.Name, " - ", item.Description)
+				return
+			}
+			if item, ok := player.CurrentRoom.Items[target]; ok {
+				fmt.Println("Items around you : ")
+				fmt.Println(" * ", item.Name, " - ", item.Description)
+				return
+			}
+			if feature, ok := player.CurrentRoom.Features[target]; ok {
+				fmt.Println("Feature around you : ")
+				fmt.Println(" * ", feature)
+				return
+			}
+			fmt.Println("You don't see a '" + target + "' here.")
 		case "read":
 			if text, ok := player.CurrentRoom.Features[argument]; ok {
 				fmt.Println(text)
@@ -198,7 +225,7 @@ func main() {
 				if player.CurrentRoom == &hut {
 					player.CurrentRoom.Description = "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, visibly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. Leaning against the wall, there used to be a pickaxe, but you now took it."
 				} else if player.CurrentRoom == &riverbank {
-					player.CurrentRoom.Description = ""
+					player.CurrentRoom.Description = "The river rushes past. The spot on the bank where the sharp-edged flint was lying is now empty."
 				}
 
 			} else {
