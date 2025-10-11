@@ -205,8 +205,8 @@ func main() {
 				}
 			}
 		case "use":
-			if argument == "pickaxe" {
-
+			switch argument {
+			case "pickaxe":
 				if _, hasPickaxe := player.Inventory["pickaxe"]; hasPickaxe {
 
 					if player.CurrentRoom == &caveEntrance {
@@ -223,17 +223,29 @@ func main() {
 				} else {
 					fmt.Println("You don't have a pickaxe")
 				}
-			} else if argument == "flint" {
+			case "flint":
 				if _, hasFlint := player.Inventory["flint"]; hasFlint {
 					if player.CurrentRoom == &guardianGate {
-						// do stuff because right room and right flint
+						fmt.Println("You strike the flint, and sparks fuses everywhere. Soon, a small cathes in the fire pit.")
+						player.CurrentRoom.Description = "You stand on a wide, rocky plateau. In front of you stand a gigantic gate, made of an unknown, dark stone. A fearsome dragon, it's scales the color of obsidian, lies coiled before it. In the center of the plateau is a small, the then-unlit fire pit now is the home of a nice fire. It doesnt't seems to quite afraid the dragon tho..."
+						player.CurrentRoom.Features["fire pit"] = "A small fire is now burning brightly in the pit"
 					}
 				} else {
 					fmt.Println("You don't have a flint")
 				}
-
-			} else {
+			case "crystals":
+				if _, hasCrystals := player.Inventory["crystals"]; hasCrystals {
+					if player.CurrentRoom == &guardianGate {
+						if strings.Contains(guardianGate.Features["fire pit"], "is now burning") {
+							// Do stuff to burn the malachite
+						} else {
+							fmt.Println("You need a fire lit first.")
+						}
+					}
+				}
+			default:
 				fmt.Println("You can't use that.")
+
 			}
 
 		default:
