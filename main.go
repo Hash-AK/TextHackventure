@@ -70,6 +70,10 @@ func main() {
 		Exits:       make(map[string]*Exit),
 		Features:    make(map[string]string),
 	}
+	treasureRoom := Room{
+		Name:        "The Treasure Roome",
+		Description: "You stuble inside a vast, stone-paved room. In it's center lies an enormous chest, debording with gold, jewels and other treasures. You made it! You found the legendary treasure of the Guardian Gate!",
+	}
 	beginningRoom.Exits["north"] = &Exit{
 		Destination: &hut,
 		Description: "As you walk carefully along the small path, the trees slowly close behind you, hiidng any trace of passage. You walk there a long, long time, so long you even forget the perception of time. Finally, you see light in front of you",
@@ -165,10 +169,15 @@ func main() {
 			os.Exit(0)
 		case "go":
 			if exit, ok := player.CurrentRoom.Exits[argument]; ok {
+				fmt.Println("***************************")
 				fmt.Println(exit.Description)
 				fmt.Println("***************************")
 				player.CurrentRoom = exit.Destination
 				fmt.Println(player.CurrentRoom.Description)
+				if player.CurrentRoom == &treasureRoom {
+					color.Yellow("Congratulation, you have won TextHackventure!")
+					os.Exit(0)
+				}
 			} else {
 				fmt.Println("You cannot go this way!")
 			}
@@ -237,7 +246,13 @@ func main() {
 				if _, hasCrystals := player.Inventory["crystals"]; hasCrystals {
 					if player.CurrentRoom == &guardianGate {
 						if strings.Contains(guardianGate.Features["fire pit"], "is now burning") {
-							// Do stuff to burn the malachite
+							fmt.Println("You throw the malachite crystals into the fire. They erupt in a brilliant, magical flame! The dragon look at it with a petrified look. Terror gains him, and he flies off into the mountains. The gian gate slowly grinds open...")
+							guardianGate.Description = "The much-feared dragon is gone, and the gate to the north stands wide open."
+							guardianGate.Exits["north"] = &Exit{
+								Destination: &treasureRoom,
+								Description: "You step solonely trought the ancient gate, into the vault beyond...",
+							}
+
 						} else {
 							fmt.Println("You need a fire lit first.")
 						}
