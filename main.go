@@ -42,9 +42,8 @@ func main() {
 	hermit := &NPC{
 		Name:        "hermit",
 		Description: "A very old man with a long, white beard sits by the empty fireplace, rocking slowly. He seems lost in toughts",
-		Dialogue:    "He looks up at you with cloudy eyes. 'The wyrm of the gate is a creature of shadow and flame...' He paused, looking lost. Then with hysteria he added 'They told me the trasure was worth it! The Alchemists Guild, the geologists... They all lied! It's all a trap! The gass... the flame... the GREEN, THE GREEN LIGHT!'. He then fell back on his seat, mumbling understandable words.",
+		Dialogue:    "He looks up at you with cloudy eyes. 'The wyrm of the gate is a creature of shadow and flame...' He paused, looking lost. Then with hysteria he added 'They told me the trasure was worth it! The Alchemists Guild, the geologists... They all lied! It's all a trap! The gass... the flame... the GREEN, THE GREEN LIGHT!'. He then fell back on his seat, mumbling obscure words.",
 	}
-	fmt.Println(hermit.Name)
 	beginningRoom := Room{
 		Name:        "The Dark Forest",
 		Description: "You are in a deep, dark, mysterious forest. Tall, majestuous trees surround you from all sides, except for a tiny path heading north, deeper and deeper into the woods. The air is cool and damp.",
@@ -60,7 +59,7 @@ func main() {
 	}
 	caveEntrance := Room{
 		Name:        "The Cave Entrance",
-		Description: "After entering the cave entrance, you feel the heavy weight of tons and tons of rock surroudning you. Suddenly, you reach the end of the tunnel. Everything beyond is obstructed by big boulders. To continue, you will need to clean up the path...",
+		Description: "After entering the cave entrance, you feel the heavy weight of tons and tons of rock surrounding you. Suddenly, you reach the end of the tunnel. Everything beyond is obstructed by big boulders. To continue, you will need to clean up the path...",
 		Exits:       make(map[string]*Exit),
 	}
 
@@ -111,7 +110,7 @@ func main() {
 	}
 	caveEntrance.Exits["west"] = &Exit{
 		Destination: &hut,
-		Description: "You head back to the west, toward the clearing and the abandonned hut you saw earlier.",
+		Description: "You head back to the west, toward the clearing and the antic hut you saw earlier.",
 	}
 	crystalCave.Exits["west"] = &Exit{
 		Destination: &caveEntrance,
@@ -151,12 +150,15 @@ func main() {
 	color.Set(color.FgBlue)
 	fmt.Println("TextHackventure!")
 	color.Unset()
+	color.Set(color.FgBlue)
 	fmt.Println("")
 	fmt.Println("***************************")
 	fmt.Println("")
 	fmt.Println("Chapter 1 : " + beginningRoom.Name)
 	fmt.Println(beginningRoom.Description)
+	color.Unset()
 	for {
+		fmt.Println("")
 		fmt.Print("> ")
 		input, _ := reader.ReadString('\n')
 		cleanInput := strings.TrimSpace(input)
@@ -172,25 +174,36 @@ func main() {
 		}
 		switch command {
 		case "help":
+			color.Set(color.FgMagenta)
+			fmt.Println("")
 			fmt.Println("command list :")
 			fmt.Println("help - display this help menu")
-			fmt.Println("look - look around the place you are currently in, if given no argument. If given an argument,  look at your iventory, item or feature in the room.")
+			fmt.Println("look - look around the place you are currently in, if given no argument. If given an argument,  look at your inventory, item or feature in the room.")
 			fmt.Println("go [north/south/east/west] - go in the choosed direction")
 			fmt.Println("read [note/sign] - read an element of the place")
 			fmt.Println("take [item] - take an item by it's name.")
 			fmt.Println("inventory - list the inventory you have.")
-			fmt.Println("talk [person] - talk to the specified person, ex hermit")
+			fmt.Println("talk [person] - talk to the specified person, ex. hermit")
+			fmt.Println("use [item] - use the specified item.")
+			color.Unset()
 		case "quit":
 			fmt.Println("Goodbye, traveller...")
 			os.Exit(0)
 		case "go":
 			if exit, ok := player.CurrentRoom.Exits[argument]; ok {
+				color.Set(color.FgGreen)
+				fmt.Println("")
 				fmt.Println("***************************")
 				fmt.Println(exit.Description)
 				fmt.Println("***************************")
+				fmt.Println("")
+				color.Unset()
+				color.Set(color.FgBlue)
 				player.CurrentRoom = exit.Destination
 				fmt.Println(player.CurrentRoom.Description)
+				color.Unset()
 				if player.CurrentRoom == &treasureRoom {
+					fmt.Println("")
 					color.Yellow("Congratulation, you have won TextHackventure!")
 					os.Exit(0)
 				}
@@ -198,41 +211,63 @@ func main() {
 				fmt.Println("You cannot go this way!")
 			}
 		case "look":
+			color.Set(color.FgMagenta)
 			if len(fieldsCommand) == 1 {
+				fmt.Println("")
 				fmt.Println("You are in : " + player.CurrentRoom.Name)
 				fmt.Println(player.CurrentRoom.Description)
-
-				if len(player.CurrentRoom.Items) > 0 {
+				var thingToSee []string
+				for _, item := range player.CurrentRoom.Items {
+					thingToSee = append(thingToSee, "a "+item.Name)
+				}
+				for _, npc := range player.CurrentRoom.NPCs {
+					thingToSee = append(thingToSee, "a "+npc.Name)
+				}
+				for featureKey := range player.CurrentRoom.Features {
+					thingToSee = append(thingToSee, "a "+featureKey)
+				}
+				if len(thingToSee) > 0 {
+					fmt.Println("")
 					fmt.Println("You also see:")
-					for _, item := range player.CurrentRoom.Items {
-						fmt.Printf(" - A %s\n", item.Name)
+					for _, thing := range thingToSee {
+						fmt.Printf(" - %s\n", thing)
 					}
 				}
-				return
+				color.Unset()
+				break
 
 			}
 			target := fieldsCommand[1]
 			if item, ok := player.Inventory[target]; ok {
 				fmt.Println("In your inventory : ")
 				fmt.Println(" * ", item.Name, " - ", item.Description)
-				return
+				color.Unset()
+				break
+
 			}
 			if item, ok := player.CurrentRoom.Items[target]; ok {
 				fmt.Println("Items around you : ")
 				fmt.Println(" * ", item.Name, " - ", item.Description)
-				return
+				color.Unset()
+				break
+
 			}
 			if feature, ok := player.CurrentRoom.Features[target]; ok {
 				fmt.Println("Feature around you : ")
 				fmt.Println(" * ", feature)
-				return
+				color.Unset()
+				break
+
 			}
 			if npc, ok := player.CurrentRoom.NPCs[target]; ok {
 				fmt.Println("People around you : ")
 				fmt.Println(" * ", npc.Description)
-				return
+				color.Unset()
+				break
+
 			}
 			fmt.Println("You don't see a '" + target + "' here.")
+			color.Unset()
 		case "read":
 			if text, ok := player.CurrentRoom.Features[argument]; ok {
 				fmt.Println(text)
@@ -245,7 +280,7 @@ func main() {
 				delete(player.CurrentRoom.Items, argument)
 				fmt.Printf("You take the %s.\n", item.Name)
 				if player.CurrentRoom == &hut {
-					player.CurrentRoom.Description = "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, visibly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. Leaning against the wall, there used to be a pickaxe, but you now took it."
+					player.CurrentRoom.Description = "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, seemingly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. Leaning against the wall, there used to be a pickaxe, but you now took it."
 				} else if player.CurrentRoom == &riverbank {
 					player.CurrentRoom.Description = "The river rushes past. The spot on the bank where the sharp-edged flint was lying is now empty."
 				}
@@ -284,9 +319,11 @@ func main() {
 			case "flint":
 				if _, hasFlint := player.Inventory["flint"]; hasFlint {
 					if player.CurrentRoom == &guardianGate {
-						fmt.Println("You strike the flint, and sparks fuses everywhere. Soon, a small cathes in the fire pit.")
+						fmt.Println("You strike the flint, and sparks fuses everywhere. Soon, a small fire catches in the fire pit.")
 						player.CurrentRoom.Description = "You stand on a wide, rocky plateau. In front of you stand a gigantic gate, made of an unknown, dark stone. A fearsome dragon, it's scales the color of obsidian, lies coiled before it. In the center of the plateau is a small, the then-unlit fire pit now is the home of a nice fire. It doesnt't seems to quite afraid the dragon tho..."
 						player.CurrentRoom.Features["fire pit"] = "A small fire is now burning brightly in the pit"
+					} else {
+						fmt.Println("You cannot use the flint here")
 					}
 				} else {
 					fmt.Println("You don't have a flint")
@@ -295,7 +332,7 @@ func main() {
 				if _, hasCrystals := player.Inventory["crystals"]; hasCrystals {
 					if player.CurrentRoom == &guardianGate {
 						if strings.Contains(guardianGate.Features["fire pit"], "is now burning") {
-							fmt.Println("You throw the malachite crystals into the fire. They erupt in a brilliant, magical flame! The dragon look at it with a petrified look. Terror gains him, and he flies off into the mountains. The gian gate slowly grinds open...")
+							fmt.Println("You throw the malachite crystals into the fire. They erupt in a brilliant, magical green flame! The dragon look at it with a petrified look. Terror gains him, and he flies off into the mountains. The giant gate slowly grinds open, opening a path toward the vault, to the north...")
 							guardianGate.Description = "The much-feared dragon is gone, and the gate to the north stands wide open."
 							guardianGate.Exits["north"] = &Exit{
 								Destination: &treasureRoom,
@@ -312,18 +349,24 @@ func main() {
 
 			}
 		case "talk":
-			if argument == "hermit" {
-				if npc, ok := player.CurrentRoom.NPCs["hermit"]; ok {
-					if !npc.TalkedTo {
-						fmt.Println(npc.Dialogue)
-						npc.TalkedTo = true
-					} else {
-						fmt.Println("'Leave me to my ghosts,' the old man mutters, refusing to look at you again.")
-					}
+			if len(fieldsCommand) > 1 {
+				if argument == "hermit" {
+					if npc, ok := player.CurrentRoom.NPCs["hermit"]; ok {
+						if !npc.TalkedTo {
+							fmt.Println(npc.Dialogue)
+							npc.TalkedTo = true
+						} else {
+							fmt.Println("'Leave me to my ghosts,' the old man mutters, refusing to look at you again.")
+						}
 
+					} else {
+						fmt.Println("You cannot talk to that.")
+					}
 				} else {
-					fmt.Println("You cannot talk to that.")
+					fmt.Println("You cannot talk to that")
 				}
+			} else {
+				fmt.Println("Please put who you want to talk to")
 			}
 		default:
 			fmt.Println(cleanInput + " : command not found. Type 'help' to get a list of the commands.")
