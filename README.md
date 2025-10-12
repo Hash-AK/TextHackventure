@@ -32,3 +32,6 @@ cd TextHackventure
 ```bash 
 go run .
 ```
+## Demo Video
+
+https://hc-cdn.hel1.your-objectstorage.com/s/v3/a863e5fc4d8f927f3bccce10e02d142a2ba68135_screencast_20251012_191233.webm
