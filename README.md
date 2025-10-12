@@ -17,3 +17,18 @@ talk [person] - talk to the specified person, ex hermit
 ```
 
 Hints are given inside the describe of each places, so be aware of this if you're stuck :wink: 
+
+## Installation
+
+- Clone this repo :
+```bash
+git clone https://github.com/Hash-AK/TextHackventure
+```
+- Enter the cloned directory : 
+```bash 
+cd TextHackventure
+```
+- Run the compile and run the .go file : 
+```bash 
+go run .
+```
