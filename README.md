@@ -8,13 +8,12 @@ The commands ingame are pretty straightforward and intuitive, but you can see th
 You entered the command: help
 command list :
 help - display this help menu
-describe - describe the place you are currently in
-
-go [north/south/east/west] - go in the choosed direction 
-
-read [note/sign] - read an element of the place  
+look - look around the place you are currently in, if given no argument. If given an argument,  look at your iventory, item or feature in the room.
+go [north/south/east/west] - go in the choosed direction
+read [note/sign] - read an element of the place
 take [item] - take an item by it's name.
 inventory - list the inventory you have.
+talk [person] - talk to the specified person, ex hermit
 ```
 
 Hints are given inside the describe of each places, so be aware of this if you're stuck :wink: 

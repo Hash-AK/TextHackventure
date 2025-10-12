@@ -179,6 +179,7 @@ func main() {
 			fmt.Println("read [note/sign] - read an element of the place")
 			fmt.Println("take [item] - take an item by it's name.")
 			fmt.Println("inventory - list the inventory you have.")
+			fmt.Println("talk [person] - talk to the specified person, ex hermit")
 		case "quit":
 			fmt.Println("Goodbye, traveller...")
 			os.Exit(0)
