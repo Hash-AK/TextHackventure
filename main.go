@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 )
@@ -38,11 +39,19 @@ type NPC struct {
 	TalkedTo    bool
 }
 
+func typeWrite(text string) {
+	for _, char := range text {
+		fmt.Printf("%c", char)
+		time.Sleep(30 * time.Millisecond)
+	}
+	fmt.Println()
+}
+
 func main() {
 	hermit := &NPC{
 		Name:        "hermit",
-		Description: "A very old man with a long, white beard sits by the empty fireplace, rocking slowly. He seems lost in toughts",
-		Dialogue:    "He looks up at you with cloudy eyes. 'The wyrm of the gate is a creature of shadow and flame...' He paused, looking lost. Then with hysteria he added 'They told me the trasure was worth it! The Alchemists Guild, the geologists... They all lied! It's all a trap! The gass... the flame... the GREEN, THE GREEN LIGHT!'. He then fell back on his seat, mumbling obscure words.",
+		Description: "A very old man with a long, white beard sits by the empty fireplace, rocking slowly. He seems lost in thoughts",
+		Dialogue:    "He looks up at you with cloudy eyes. 'The wyrm of the gate is a creature of shadow and flame...' He paused, looking lost. Then with hysteria he added 'They told me the treasure was worth it! The Alchemists Guild, the geologists... They all lied! It's all a trap! The gas... the flame... the GREEN, THE GREEN LIGHT!'. He then fell back on his seat, mumbling obscure words.",
 	}
 	beginningRoom := Room{
 		Name:        "The Dark Forest",
@@ -51,7 +60,7 @@ func main() {
 	}
 	hut := Room{
 		Name:        "The Abandonned Hut",
-		Description: "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, visibly abandonned hut stands. It's thathched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. In the corner, an old hermit sits rocking in a chair, starring blankly at the empty fireplace.Leaning against the wall, you see a sturdy-looking pickaxe",
+		Description: "You stumble upon a vast clearing. A path continue toward the mountain on the east, and a small stream goes toward the west. In the center of the clearing, an old, visibly abandonned hut stands. It's thatched roof is smashed on quite a few place. As you enter it, you see and old, dusty table. A small note is placed on it. In the corner, an old hermit sits rocking in a chair, staring blankly at the empty fireplace.Leaning against the wall, you see a sturdy-looking pickaxe",
 		Exits:       make(map[string]*Exit),
 		Features:    make(map[string]string),
 		Items:       make(map[string]*Item),
@@ -65,7 +74,7 @@ func main() {
 
 	crystalCave := Room{
 		Name:        "The Crystal Cave",
-		Description: "As you look around, you realize that weird little crystals emerge of the rock. They cover the walls and ceiling of the cave, makink long, brilliant veins. A long-forgotten sign lies on one wall. You realize that the little lamps you saw earlier aren't usual lamps : they glow from a weird, magical green flame...",
+		Description: "As you look around, you realize that weird little crystals emerge of the rock. They cover the walls and ceiling of the cave, making long, brilliant veins. A long-forgotten sign lies on one wall. You realize that the little lamps you saw earlier aren't usual lamps : they glow from a weird, magical green flame...",
 		Exits:       make(map[string]*Exit),
 		Items:       make(map[string]*Item),
 		Features:    make(map[string]string),
@@ -85,11 +94,11 @@ func main() {
 	}
 	treasureRoom := Room{
 		Name:        "The Treasure Room",
-		Description: "You stuble inside a vast, stone-paved room. In it's center lies an enormous chest, debording with gold, jewels and other treasures. You made it! You found the legendary treasure of the Guardian Gate!",
+		Description: "You stumble inside a vast, stone-paved room. In it's center lies an enormous chest, overflowing with gold, jewels and other treasures. You made it! You found the legendary treasure of the Guardian Gate!",
 	}
 	beginningRoom.Exits["north"] = &Exit{
 		Destination: &hut,
-		Description: "As you walk carefully along the small path, the trees slowly close behind you, hiidng any trace of passage. You walk there a long, long time, so long you even forget the perception of time. Finally, you see light in front of you",
+		Description: "As you walk carefully along the small path, the trees slowly close behind you, hiding any trace of passage. You walk there a long, long time, so long you even forget the perception of time. Finally, you see light in front of you",
 	}
 	hut.Exits["south"] = &Exit{
 		Destination: &beginningRoom,
@@ -154,8 +163,8 @@ func main() {
 	fmt.Println("")
 	fmt.Println("***************************")
 	fmt.Println("")
-	fmt.Println("Chapter 1 : " + beginningRoom.Name)
-	fmt.Println(beginningRoom.Description)
+	typeWrite("Chapter 1 : " + beginningRoom.Name)
+	typeWrite(beginningRoom.Description)
 	color.Unset()
 	for {
 		fmt.Println("")
@@ -194,13 +203,13 @@ func main() {
 				color.Set(color.FgGreen)
 				fmt.Println("")
 				fmt.Println("***************************")
-				fmt.Println(exit.Description)
+				typeWrite(exit.Description)
 				fmt.Println("***************************")
 				fmt.Println("")
 				color.Unset()
 				color.Set(color.FgBlue)
 				player.CurrentRoom = exit.Destination
-				fmt.Println(player.CurrentRoom.Description)
+				typeWrite(player.CurrentRoom.Description)
 				color.Unset()
 				if player.CurrentRoom == &treasureRoom {
 					fmt.Println("")
@@ -270,7 +279,7 @@ func main() {
 			color.Unset()
 		case "read":
 			if text, ok := player.CurrentRoom.Features[argument]; ok {
-				fmt.Println(text)
+				typeWrite(text)
 			} else {
 				fmt.Println("You cannot read this")
 			}
@@ -320,7 +329,7 @@ func main() {
 				if _, hasFlint := player.Inventory["flint"]; hasFlint {
 					if player.CurrentRoom == &guardianGate {
 						fmt.Println("You strike the flint, and sparks fuses everywhere. Soon, a small fire catches in the fire pit.")
-						player.CurrentRoom.Description = "You stand on a wide, rocky plateau. In front of you stand a gigantic gate, made of an unknown, dark stone. A fearsome dragon, it's scales the color of obsidian, lies coiled before it. In the center of the plateau is a small, the then-unlit fire pit now is the home of a nice fire. It doesnt't seems to quite afraid the dragon tho..."
+						player.CurrentRoom.Description = "You stand on a wide, rocky plateau. In front of you stand a gigantic gate, made of an unknown, dark stone. A fearsome dragon, his scales the color of obsidian, lies coiled before it. In the center of the plateau is a small, the then-unlit fire pit now is the home of a nice fire. The dragon doesn't seem to be afraid of it, though..."
 						player.CurrentRoom.Features["fire pit"] = "A small fire is now burning brightly in the pit"
 					} else {
 						fmt.Println("You cannot use the flint here")
@@ -353,10 +362,14 @@ func main() {
 				if argument == "hermit" {
 					if npc, ok := player.CurrentRoom.NPCs["hermit"]; ok {
 						if !npc.TalkedTo {
-							fmt.Println(npc.Dialogue)
+							color.Set(color.FgYellow)
+							typeWrite(npc.Dialogue)
 							npc.TalkedTo = true
+							color.Unset()
 						} else {
-							fmt.Println("'Leave me to my ghosts,' the old man mutters, refusing to look at you again.")
+							color.Set(color.FgYellow)
+							typeWrite("'Leave me to my ghosts,' the old man mutters, refusing to look at you again.")
+							color.Unset()
 						}
 
 					} else {
