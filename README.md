@@ -19,7 +19,9 @@ talk [person] - talk to the specified person, ex hermit
 Hints are given inside the describe of each places, so be aware of this if you're stuck :wink: 
 
 ## Installation
+Download the correct executable from [the releases](https://github.com/Hash-AK/TextHackventure/releases) or follow the next section.
 
+## Building it yourself
 - Clone this repo :
 ```bash
 git clone https://github.com/Hash-AK/TextHackventure
